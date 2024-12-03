@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - Job Interview Coach</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        #chat-container {
+            width: 50%;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background: white;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        #messages {
+            height: 400px;
+            overflow-y: auto;
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .message {
+            margin: 10px 0;
+        }
+        .user {
+            color: blue;
+            font-weight: bold;
+        }
+        .heloisa {
+            color: green;
+            font-weight: bold;
+        }
+        #input-container {
+            display: flex;
+        }
+        #input-message {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        #send-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #send-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Job Interview Coach</h1>
+    <div id="chat-container">
+        <div id="messages"></div>
+        <div id="input-container">
+            <input id="input-message" type="text" placeholder="Type your message here..." />
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const messagesDiv = document.getElementById('messages');
+        const inputMessage = document.getElementById('input-message');
+        const sendBtn = document.getElementById('send-btn');
+
+        // Adicionar mensagem ao chat
+        function addMessage(author, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.innerHTML = `<span class="${author}">${author}:</span> ${text}`;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Enviar mensagem ao servidor
+        async function sendMessage() {
+            const userMessage = inputMessage.value.trim();
+            if (!userMessage) return;
+
+            addMessage('user', userMessage);
+            inputMessage.value = '';
+
+            try {
+                const response = await fetch('...', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: userMessage, position: 'Software Engineer' })
+                });
+                const data = await response.json();
+                addMessage('heloisa', data.response);
+            } catch (error) {
+                addMessage('heloisa', 'Error: Unable to connect to the server.');
+            }
+        }
+
+        // Eventos
+        sendBtn.addEventListener('click', sendMessage);
+        inputMessage.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+</html>
